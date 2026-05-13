@@ -9,7 +9,7 @@ export async function POST(request) {
 
     const session = await stripe.checkout.sessions.create({
       mode: 'subscription',
-      payment_method_types: ['card', 'alipay', 'wechat_pay'],
+      payment_method_types: ['card'],
       line_items: [
         {
           price: priceId || 'price_1TWbX5C3CRNa0CYmjg42J0GJ',
