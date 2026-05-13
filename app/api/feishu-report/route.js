@@ -1,9 +1,7 @@
-export async function GET() {
+export async function GET(request) {
   const webhookUrl = process.env.FEISHU_WEBHOOK_URL;
   
-  const baseUrl = process.env.VERCEL_URL 
-    ? `https://${process.env.VERCEL_URL}` 
-    : 'http://localhost:3000';
+  const baseUrl = request.nextUrl.origin;
   
   const crawlerRes = await fetch(`${baseUrl}/api/crawler`);
   const crawlerData = await crawlerRes.json();
