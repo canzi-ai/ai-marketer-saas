@@ -1,6 +1,5 @@
 export async function GET(request) {
   const webhookUrl = process.env.FEISHU_WEBHOOK_URL;
-  
   const baseUrl = request.nextUrl.origin;
   
   const crawlerRes = await fetch(`${baseUrl}/api/crawler`);
@@ -11,37 +10,57 @@ export async function GET(request) {
   }
 
   const opportunities = crawlerData.analysis.opportunities || [];
-  const top5 = opportunities.slice(0, 5);
+  
+  const url = new URL(request.url);
+  const isPaid = url.searchParams.get('paid') === 'true';
+  const topItems = isPaid ? opportunities.slice(0, 5) : opportunities.slice(0, 1);
+  
+  const now = new Date();
+  const beijingTime = new Date(now.getTime() + 8 * 60 * 60 * 1000);
+  const timeStr = beijingTime.toISOString().replace('T', ' ').substring(0, 19);
   
   const message = {
     msg_type: "interactive",
     card: {
       header: {
-        title: { tag: "plain_text", content: "🤖 今日AI商机快报" },
-        template: "blue"
+        title: { tag: "plain_text", content: isPaid ? `🤖 AI商机日报 · 深度版 (${timeStr})` : `🤖 AI商机速览 (${timeStr})` },
+        template: isPaid ? "purple" : "blue"
       },
       elements: [
         {
           tag: "div",
           text: { 
             tag: "lark_md", 
-            content: `📅 抓取时间：${crawlerData.fetchedAt}\n📡 数据来源：${crawlerData.source}\n📊 共分析 ${crawlerData.productCount} 个产品，筛选出 ${top5.length} 个变现机会`
+            content: `📡 多源扫描：Product Hunt / Hacker News / GitHub Trending\n📊 扫描 ${crawlerData.totalScanned} 条信号，精选 ${topItems.length} 个机会`
           }
         },
         { tag: "hr" },
-        ...top5.map((item, index) => ({
+        ...topItems.flatMap((item, index) => [
+          {
+            tag: "div",
+            text: {
+              tag: "lark_md",
+              content: `**${index + 1}. ${item.signal || '新信号'}**\n` +
+                       `🏷️ 来源：${item.source || '综合'}\n` +
+                       `📈 潜力：${item.revenue_potential || '待评估'} | 难度：${item.difficulty || '中'}\n` +
+                       `🎯 用户：${item.target_users || '待分析'}\n` +
+                       `💡 洞察：${item.why || '暂无深度分析'}\n` +
+                       `⚡ 行动：${item.action || '暂未提供'}\n` +
+                       `⏰ 窗口期：${item.time_window || '未知'}`
+            }
+          },
+          { tag: "hr" }
+        ]),
+        ...(isPaid ? [{
+          tag: "note",
+          elements: [{ tag: "plain_text", content: "由 DeepSeek 多智能体系统自动生成" }]
+        }] : [{
           tag: "div",
           text: {
             tag: "lark_md",
-            content: `**${index + 1}. ${item.product || '未知产品'}**\n💡 商机：${item.why || '暂无分析'}\n🎯 行动：${item.action || '暂未提供'}`
+            content: "🔒 **想看完整 5 个机会 + 深度分析？**\n[👉 点击订阅付费版](https://canzi-ai.com/pricing)"
           }
-        })).flatMap(item => [item, { tag: "hr" }]),
-        {
-          tag: "note",
-          elements: [
-            { tag: "plain_text", content: "由 DeepSeek + 多机器人系统自动生成" }
-          ]
-        }
+        }])
       ]
     }
   };
@@ -54,9 +73,5 @@ export async function GET(request) {
 
   const feishuResult = await feishuRes.json();
   
-  return Response.json({
-    success: true,
-    feishuStatus: feishuResult.StatusMessage || 'sent',
-    report: crawlerData
-  });
+  return Response.json({ success: true, isPaid, itemsCount: topItems.length, feishuStatus: feishuResult.StatusMessage || 'sent' });
 }
