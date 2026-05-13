@@ -1,13 +1,11 @@
-export async function GET() {
+export async function GET(request) {
   const results = {
     crawler: null,
     feishu: null,
     errors: []
   };
 
-  const baseUrl = process.env.VERCEL_URL 
-    ? `https://${process.env.VERCEL_URL}` 
-    : 'http://localhost:3000';
+  const baseUrl = request.nextUrl.origin;
 
   // 第1步：抓取和分析
   try {
