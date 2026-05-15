@@ -5,31 +5,46 @@ import { Suspense } from 'react';
 function CheckoutContent() {
   const searchParams = useSearchParams();
   const plan = searchParams.get('plan') || 'standard';
-  const plans: Record<string, { name: string; price: string }> = {
-    standard: { name: '⚡ 标准版', price: '¥99/月' },
-    pro: { name: '💎 高级版', price: '¥299/月' },
+  const plans: Record<string, { name: string; price: string; desc: string; firstMonth: string }> = {
+    standard: { name: '⚡ 付费版', price: '¥29/月', firstMonth: '¥9.9', desc: '每日5条机会+飞书推送' },
+    pro: { name: '💎 深度版', price: '¥99/月', firstMonth: '¥99', desc: '全部+1v1语音' },
   };
   const current = plans[plan] || plans.standard;
 
   return (
-    <div className="max-w-lg mx-auto py-20 px-4 text-center">
-      <h1 className="text-3xl font-bold mb-4">确认订阅</h1>
+    <div className="max-w-lg mx-auto py-16 px-4 text-center">
+      <h1 className="text-3xl font-bold mb-3">确认订阅</h1>
       <div className="bg-gray-50 rounded-2xl p-8 mb-6">
         <p className="text-lg mb-2">{current.name}</p>
-        <p className="text-4xl font-bold">{current.price}</p>
+        <div className="flex items-center justify-center gap-3 mb-1">
+          {current.firstMonth !== current.price && (
+            <span className="text-lg text-gray-400 line-through">{current.price}</span>
+          )}
+          <p className="text-5xl font-bold text-blue-600">{current.firstMonth}首月</p>
+        </div>
+        <p className="text-sm text-gray-400 mt-1">{current.desc}</p>
+        {current.firstMonth !== current.price && (
+          <p className="text-sm text-green-600 mt-2 font-medium">🎉 次月起恢复 {current.price}，随时可取消</p>
+        )}
       </div>
-      <p className="text-gray-500 mb-6">
-        支付功能即将上线。现在订阅请直接联系👇
-      </p>
-      <a
-        href="mailto:hi@canzi-ai.com?subject=订阅{current.name}"
-        className="inline-block bg-blue-600 text-white px-8 py-3 rounded-full font-medium text-lg hover:bg-blue-700"
-      >
-        联系订阅（前10名首月半价）
-      </a>
-      <p className="mt-4 text-sm text-gray-400">
-        或搜索微信号添加：canzi-ai
-      </p>
+
+      <div className="bg-green-50 border border-green-200 rounded-2xl p-6 mb-6">
+        <p className="text-lg font-semibold text-green-800 mb-3">📱 30秒完成订阅</p>
+        <div className="bg-white rounded-xl p-4 mb-3 inline-block border-2 border-dashed border-green-300">
+          <p className="text-6xl mb-2">📱</p>
+          <p className="text-sm text-gray-500 font-mono">扫码添加微信</p>
+          <p className="text-xs text-gray-400 mt-1">（替换为你的微信二维码图片）</p>
+        </div>
+        <p className="text-sm text-gray-600 mb-2">或手动搜索微信号：</p>
+        <p className="text-xl font-bold font-mono bg-white inline-block px-6 py-2 rounded-full border">canzi-ai</p>
+        <p className="text-xs text-gray-400 mt-3">添加后发送「订阅付费版」</p>
+      </div>
+
+      <div className="text-sm text-gray-500 space-y-1">
+        <p>💳 支持微信支付 / 支付宝</p>
+        <p>🔒 首月 ¥9.9 · 次月 ¥29 · 随时取消</p>
+        <p>↩️ 30天无理由退款</p>
+      </div>
     </div>
   );
 }

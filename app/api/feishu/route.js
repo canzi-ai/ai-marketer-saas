@@ -15,7 +15,6 @@ export async function GET() {
     h1 { font-size: 28px; margin-bottom: 12px; color: #1a1a2e; }
     p { color: #666; line-height: 1.6; margin-bottom: 8px; }
     .highlight { background: #f0f4ff; border-radius: 12px; padding: 16px; margin: 24px 0; text-align: left; }
-    .highlight p { margin-bottom: 4px; font-size: 14px; }
     .btn { display: inline-block; background: #667eea; color: white; padding: 14px 32px; border-radius: 50px; text-decoration: none; font-weight: 600; margin-top: 16px; }
   </style>
 </head>
@@ -30,7 +29,7 @@ export async function GET() {
       <p>📌 内容：1 条可执行赚钱机会</p>
     </div>
     <p style="font-size: 14px; color: #999;">想解锁每日 5 条 + 完整 SOP？</p>
-    <a href="/?upgrade=true" class="btn">升级标准版 ¥99/月</a>
+    <a href="/checkout?plan=standard" class="btn">首月 ¥9.9 体验</a>
   </div>
 </body>
 </html>`;
@@ -55,7 +54,7 @@ export async function POST() {
     const elements = [
       {
         tag: 'div',
-        text: { tag: 'lark_md', content: `**🚀 独立开发者掘金简报**\n${new Date().toLocaleDateString('zh-CN')}` }
+        text: { tag: 'lark_md', content: `**🚀 独立开发者掘金简报**\n${new Date().toLocaleDateString('zh-CN')}\n⚠️ 由 AI 自动生成，仅供参考` }
       },
       { tag: 'hr' },
       {
@@ -70,12 +69,12 @@ export async function POST() {
         tag: 'div',
         text: {
           tag: 'lark_md',
-          content: `👉 解锁每日 5 条完整机会 + 执行 SOP\n仅 ¥99/月  [立即订阅](https://canzi-ai.com/?upgrade=true)`
+          content: `👉 解锁每日 5 条完整机会 + 执行 SOP\n首月 ¥9.9  [立即订阅](https://canzi-ai.com/checkout?plan=standard)`
         }
       },
       {
         tag: 'note',
-        elements: [{ tag: 'plain_text', content: '退订请回复 TD' }]
+        elements: [{ tag: 'plain_text', content: 'AI生成仅供参考 · 付费版附人工筛选 · 退订回复 TD' }]
       }
     ];
 
