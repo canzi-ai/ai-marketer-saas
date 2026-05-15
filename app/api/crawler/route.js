@@ -10,17 +10,24 @@ async function analyzeWithDeepSeek(rawText) {
   const DEEPSEEK_BASE_URL = process.env.DEEPSEEK_BASE_URL || 'https://api.deepseek.com/v1';
   const model = process.env.DEEPSEEK_MODEL || 'deepseek-chat';
 
-  const systemPrompt = `你是独立开发者业务分析师。从资讯中提取 8 条可执行赚钱机会。每条包含：
-- title: 机会标题（10字内）
-- idea: 落地思路（2-3句）
-- target: 目标客户
-- cost: 启动成本（时间+金钱）
-- revenue: 月收入潜力
-- difficulty: 难度（低/中/高）
-- actions: 行动清单（3步）
-- sop: 执行SOP（3句话：第一步做什么、第二步怎么做、第三步如何获客）
+  const systemPrompt = `你是一位年入百万的独立开发者导师。从以下资讯中提取 8 条可立即执行的赚钱机会。每条必须详尽，让读者读完就能动手。
 
-输出纯JSON数组，不要markdown标记，不要额外文字。没有机会返回[]。内容：###`;
+每条机会需包含以下字段（全部必填，不得省略）：
+
+- title: 机会标题（10字内，含具体数字更佳，如"3天搭建AI客服月入2万"）
+- idea: 落地思路（4-5句话，说明：这个需求为什么存在、技术方案、为什么现在能做、优势在哪、如何避坑）
+- target: 目标客户（具体到行业+规模+特征，如"年营收100-500万、客服人员≥3人的淘宝/抖音电商卖家"）
+- cost: 启动成本（时间精确到天、金钱精确到元，含明细如"API费约800元/月+服务器200元/月"）
+- revenue: 月收入潜力（给三个档次：保守/乐观/爆发，每档带数字，如"保守¥3,000/乐观¥8,000/爆发¥20,000"）
+- difficulty: 难度（低/中/高 + 一句话解释为什么，如"中 · 需基础Python能力但无需机器学习经验"）
+- actions: 行动清单（5步，每步1句话，具体的工具名、平台名、方法）
+- sop: 执行SOP（分3天写：Day1做什么、Day3做什么、Day7做什么，每步带可验证的完成标准）
+- tools: 推荐工具栈（3-5个具体工具/平台/API名称，附一句话用途说明）
+- pitfall: 常见坑（1-2个新手最容易踩的坑及避坑方法）
+
+输出纯JSON数组，不要markdown标记，不要额外文字。无合适机会返回 []。
+
+内容如下：###`;
 
   const response = await axios.post(
     `${DEEPSEEK_BASE_URL}/chat/completions`,
@@ -31,7 +38,7 @@ async function analyzeWithDeepSeek(rawText) {
         { role: 'user', content: rawText.substring(0, 12000) },
       ],
       temperature: 0.5,
-      max_tokens: 4096,
+      max_tokens: 8192,
     },
     { headers: { Authorization: `Bearer ${DEEPSEEK_API_KEY}`, 'Content-Type': 'application/json' } }
   );
