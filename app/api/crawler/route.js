@@ -10,20 +10,17 @@ async function analyzeWithDeepSeek(rawText) {
   const DEEPSEEK_BASE_URL = process.env.DEEPSEEK_BASE_URL || 'https://api.deepseek.com/v1';
   const model = process.env.DEEPSEEK_MODEL || 'deepseek-chat';
 
-  const systemPrompt = `你是一名专业的独立开发者业务分析师。你的任务是从给定的行业资讯中，**只**提取出可独立执行、低投入、高潜力的赚钱机会。忽略所有纯新闻、纯技术、纯资本事件的摘要。为每个机会提供：
+  const systemPrompt = `你是独立开发者业务分析师。从资讯中提取 8 条可执行赚钱机会。每条包含：
+- title: 机会标题（10字内）
+- idea: 落地思路（2-3句）
+- target: 目标客户
+- cost: 启动成本（时间+金钱）
+- revenue: 月收入潜力
+- difficulty: 难度（低/中/高）
+- actions: 行动清单（3步）
+- sop: 执行SOP（3句话：第一步做什么、第二步怎么做、第三步如何获客）
 
-- 机会标题（10字以内，直击痛点）
-- 落地思路（2-3句话，说明如何转化为产品/服务）
-- 目标客户（1句话）
-- 预估启动成本（时间+金钱）
-- 预估月收入潜力（区间）
-- 难度等级（低/中/高）
-- 行动清单（3个具体下一步动作）
-
-**输出格式**：严格 JSON 数组，不要任何额外解说，不要 markdown，不要代码块标记。每个元素包含字段：title, idea, target, cost, revenue, difficulty, actions (数组)。
-如果没有合适机会，返回空数组 []。
-
-内容如下：###`;
+输出纯JSON数组，不要markdown标记，不要额外文字。没有机会返回[]。内容：###`;
 
   const response = await axios.post(
     `${DEEPSEEK_BASE_URL}/chat/completions`,
@@ -31,12 +28,12 @@ async function analyzeWithDeepSeek(rawText) {
       model,
       messages: [
         { role: 'system', content: systemPrompt },
-        { role: 'user', content: rawText.substring(0, 8000) },
+        { role: 'user', content: rawText.substring(0, 12000) },
       ],
-      temperature: 0.4,
-      max_tokens: 2048,
+      temperature: 0.5,
+      max_tokens: 4096,
     },
-    { headers: { Authorization: `Bearer ${DEEPSEEK_API_KEY}`, 'Content-Type': 'application/json; charset=utf-8' } }
+    { headers: { Authorization: `Bearer ${DEEPSEEK_API_KEY}`, 'Content-Type': 'application/json' } }
   );
 
   const content = response.data.choices[0].message.content;
@@ -61,7 +58,7 @@ export async function GET(request) {
           const text = $(el).find('description').text() || $(el).find('title').text();
           texts.push(text);
         });
-        const combined = texts.slice(0, 10).join('\n');
+        const combined = texts.slice(0, 15).join('\n');
         const opportunities = await analyzeWithDeepSeek(combined);
         results.push({ source: src.name, opportunities });
       }

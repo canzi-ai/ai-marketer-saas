@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>付费内容发送 - 独立开发者掘金简报</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: -apple-system, BlinkMacSystemFont, sans-serif; background: #f5f5f5; padding: 20px; }
+    .container { max-width: 800px; margin: 0 auto; }
+    h1 { margin-bottom: 20px; }
+    .card { background: white; border-radius: 12px; padding: 24px; margin-bottom: 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+    .card h2 { color: #1a56db; margin-bottom: 8px; }
+    .field { margin-bottom: 8px; }
+    .field-label { font-weight: 600; font-size: 14px; color: #666; }
+    .field-value { font-size: 14px; color: #333; }
+    .sop-box { background: #f0fdf4; border-left: 4px solid #22c55e; padding: 12px; margin-top: 8px; border-radius: 0 8px 8px 0; }
+    .btn { display: inline-block; padding: 12px 24px; border-radius: 8px; font-weight: 600; border: none; cursor: pointer; font-size: 16px; margin-right: 12px; }
+    .btn-primary { background: #1a56db; color: white; }
+    .btn-secondary { background: #e5e7eb; color: #333; }
+    .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+    #status { margin-top: 16px; padding: 12px; border-radius: 8px; display: none; }
+    .success { background: #dcfce7; color: #166534; display: block; }
+    .error { background: #fee2e2; color: #991b1b; display: block; }
+    .loading { text-align: center; padding: 40px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>📬 付费内容发送</h1>
+    <div style="margin-bottom: 16px;">
+      <button class="btn btn-primary" onclick="fetchPaidContent()">🔄 获取今日付费内容（5条+SOP）</button>
+      <button class="btn btn-secondary" onclick="copyToClipboard()">📋 一键复制</button>
+      <button class="btn btn-secondary" onclick="pushToFeishu()">📤 推送到付费飞书群</button>
+    </div>
+    <div id="status"></div>
+    <div id="content"></div>
+  </div>
+
+  <script>
+    let paidData = [];
+
+    async function fetchPaidContent() {
+      document.getElementById('content').innerHTML = '<div class="loading">⏳ 正在调用 DeepSeek 生成付费内容...</div>';
+      try {
+        const res = await fetch('/api/daily-report?tier=paid');
+        const data = await res.json();
+        paidData = data.report.opportunities;
+        renderContent();
+        showStatus('✅ 已获取 ' + paidData.length + ' 条机会', 'success');
+      } catch (e) {
+        showStatus('❌ 获取失败：' + e.message, 'error');
+      }
+    }
+
+    function renderContent() {
+      let html = '<p style="margin-bottom:12px;color:#666;">📅 ' + new Date().toLocaleDateString('zh-CN') + ' · 今日付费版 · 共 ' + paidData.length + ' 条</p>';
+      paidData.forEach((opp, i) => {
+        html += `<div class="card">
+          <h2>${i+1}. ${opp.title}</h2>
+          <div class="field"><span class="field-label">💡 机会：</span><span class="field-value">${opp.idea}</span></div>
+          <div class="field"><span class="field-label">🎯 客户：</span><span class="field-value">${opp.target}</span></div>
+          <div class="field"><span class="field-label">💰 收入：</span><span class="field-value">${opp.revenue} · ⚡ ${opp.difficulty} · ${opp.cost}</span></div>
+          <div class="field"><span class="field-label">📋 行动：</span><span class="field-value">${(opp.actions||[]).join(' → ')}</span></div>
+          <div class="sop-box"><strong>📝 执行SOP：</strong>${opp.sop || '暂无'}</div>
+        </div>`;
+      });
+      document.getElementById('content').innerHTML = html;
+    }
+
+    function copyToClipboard() {
+      let text = '🚀 独立开发者掘金简报 · 付费版\n' + new Date().toLocaleDateString('zh-CN') + '\n━━━━━━━━━━━━━━━━\n\n';
+      paidData.forEach((opp, i) => {
+        text += `${i+1}. ${opp.title}\n`;
+        text += `💡 ${opp.idea}\n`;
+        text += `🎯 ${opp.target}\n`;
+        text += `💰 ${opp.revenue} | ⚡ ${opp.difficulty} | ${opp.cost}\n`;
+        text += `📋 ${(opp.actions||[]).join(' → ')}\n`;
+        text += `📝 SOP：${opp.sop || '暂无'}\n`;
+        text += '\n━━━━━━━━━━━━━━━━\n\n';
+      });
+      navigator.clipboard.writeText(text).then(() => {
+        showStatus('✅ 已复制到剪贴板，直接粘贴发给客户', 'success');
+      });
+    }
+
+    async function pushToFeishu() {
+      try {
+        const res = await fetch('/api/feishu', { method: 'POST' });
+        const data = await res.json();
+        if (data.success) {
+          showStatus('✅ 已推送到飞书群', 'success');
+        } else {
+          showStatus('❌ 推送失败：' + data.error, 'error');
+        }
+      } catch (e) {
+        showStatus('❌ 推送失败：' + e.message, 'error');
+      }
+    }
+
+    function showStatus(msg, type) {
+      const el = document.getElementById('status');
+      el.textContent = msg;
+      el.className = type;
+      el.style.display = 'block';
+    }
+
+    // 自动加载
+    fetchPaidContent();
+  </script>
+</body>
+</html>
