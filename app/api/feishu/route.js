@@ -1,5 +1,42 @@
 import { NextResponse } from 'next/server';
 
+export async function GET() {
+  const html = `<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>订阅成功 - 独立开发者掘金简报</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; display: flex; align-items: center; justify-content: center; }
+    .card { background: white; border-radius: 20px; padding: 48px 40px; max-width: 480px; text-align: center; box-shadow: 0 20px 60px rgba(0,0,0,0.15); }
+    .emoji { font-size: 64px; margin-bottom: 16px; }
+    h1 { font-size: 28px; margin-bottom: 12px; color: #1a1a2e; }
+    p { color: #666; line-height: 1.6; margin-bottom: 8px; }
+    .highlight { background: #f0f4ff; border-radius: 12px; padding: 16px; margin: 24px 0; text-align: left; }
+    .highlight p { margin-bottom: 4px; font-size: 14px; }
+    .btn { display: inline-block; background: #667eea; color: white; padding: 14px 32px; border-radius: 50px; text-decoration: none; font-weight: 600; margin-top: 16px; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="emoji">🎉</div>
+    <h1>免费订阅成功！</h1>
+    <p>明天起，每天上午你会收到一条掘金机会推送。</p>
+    <div class="highlight">
+      <p>📬 推送渠道：飞书机器人</p>
+      <p>⏰ 推送时间：每日早 8:00</p>
+      <p>📌 内容：1 条可执行赚钱机会</p>
+    </div>
+    <p style="font-size: 14px; color: #999;">想解锁每日 5 条 + 完整 SOP？</p>
+    <a href="/?upgrade=true" class="btn">升级标准版 ¥99/月</a>
+  </div>
+</body>
+</html>`;
+  return new Response(html, { headers: { 'Content-Type': 'text/html; charset=utf-8' } });
+}
+
 export async function POST() {
   try {
     const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
@@ -33,7 +70,7 @@ export async function POST() {
         tag: 'div',
         text: {
           tag: 'lark_md',
-          content: `👉 解锁每日 5 条完整机会 + 执行 SOP\n仅 ¥99/月  [立即订阅](https://canzi-ai.com/pricing)`
+          content: `👉 解锁每日 5 条完整机会 + 执行 SOP\n仅 ¥99/月  [立即订阅](https://canzi-ai.com/?upgrade=true)`
         }
       },
       {
@@ -55,7 +92,7 @@ export async function POST() {
 
     await fetch(webhookUrl, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json; charset=utf-8' },
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(feishuBody)
     });
 
