@@ -67,6 +67,7 @@ async function analyzeWithAI(rawText) {
   return callAI(rawText);
 }
 
+export async function GET(request) {
 
   try {
     const results = [];
