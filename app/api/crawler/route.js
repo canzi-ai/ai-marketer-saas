@@ -5,7 +5,7 @@ const SOURCES = [
   { name: '机器之心', url: 'https://www.jiqizhixin.com/rss', type: 'rss' },
 ];
 
-async function analyzeWithDeepSeek(rawText) {
+async function analyzeWithAI(rawText) {
   const DEEPSEEK_API_KEY = process.env.DEEPSEEK_API_KEY;
   const DEEPSEEK_BASE_URL = process.env.DEEPSEEK_BASE_URL || 'https://api.deepseek.com/v1';
   const model = process.env.DEEPSEEK_MODEL || 'deepseek-chat';
@@ -66,7 +66,7 @@ export async function GET(request) {
           texts.push(text);
         });
         const combined = texts.slice(0, 15).join('\n');
-        const opportunities = await analyzeWithDeepSeek(combined);
+        const opportunities = await analyzeWithAI(combined);
         results.push({ source: src.name, opportunities });
       }
     }

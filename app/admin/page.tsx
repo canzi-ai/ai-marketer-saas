@@ -27,7 +27,7 @@ export default function AdminPage() {
       const res = await fetch('/api/daily-report?tier=paid');
       const data = await res.json();
       setPaidData(data.report?.opportunities || []);
-      showStatus(`✅ DeepSeek 深度分析完成 · 今日推送 ${data.report?.opportunities?.length || 0} 条掘金机会（附完整SOP+工具栈+避坑指南）`, 'success');
+      showStatus(`✅ 深度分析完成 · 今日推送 ${data.report?.opportunities?.length || 0} 条掘金机会（附完整SOP+工具栈+避坑指南）`, 'success');
     } catch (e: any) {
       showStatus('❌ 获取失败：' + e.message, 'error');
     } finally {
@@ -120,7 +120,7 @@ export default function AdminPage() {
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 24, flexWrap: 'wrap', gap: 12 }}>
           <div>
             <h1 style={{ color: '#f1f5f9', fontSize: 28, margin: 0 }}>📬 付费内容发送</h1>
-            <p style={{ color: '#94a3b8', fontSize: 14, margin: '4px 0 0' }}>DeepSeek 深度分析 · 5条机会 + 完整SOP + 工具栈 + 避坑</p>
+            <p style={{ color: '#94a3b8', fontSize: 14, margin: '4px 0 0' }}>深度分析 · 5条机会 + 完整SOP + 工具栈 + 避坑</p>
           </div>
           <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
             <button onClick={fetchPaidContent} style={{ padding: '12px 20px', borderRadius: 10, fontWeight: 700, border: 'none', cursor: 'pointer', fontSize: 15, background: '#3b82f6', color: '#fff' }}>
@@ -144,7 +144,7 @@ export default function AdminPage() {
         {loading ? (
           <div style={{ textAlign: 'center', padding: 80 }}>
             <div style={{ fontSize: 48, marginBottom: 16 }}>⏳</div>
-            <p style={{ color: '#94a3b8', fontSize: 18 }}>DeepSeek 正在深度分析行业动态...</p>
+            <p style={{ color: '#94a3b8', fontSize: 18 }}>AI 正在深度分析行业动态...</p>
             <p style={{ color: '#64748b', fontSize: 14, marginTop: 8 }}>提取可执行机会 + 生成SOP + 匹配工具栈</p>
           </div>
         ) : (
@@ -212,7 +212,7 @@ export default function AdminPage() {
 
             <div style={{ textAlign: 'center', padding: '40px 0', color: '#64748b', fontSize: 13 }}>
               <p>━━━ 付费版 END · 明日继续 ━━━</p>
-              <p style={{ marginTop: 8 }}>以上内容由 DeepSeek 深度分析生成 · 附人工审核</p>
+              <p style={{ marginTop: 8 }}>以上内容由 深度分析生成 · 附人工审核</p>
             </div>
           </>
         )}
