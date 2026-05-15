@@ -5,7 +5,7 @@ const SOURCES = [
   { name: '机器之心', url: 'https://www.jiqizhixin.com/rss', type: 'rss' },
 ];
 
-async function analyzeWithAI(rawText) {
+async function callAI(rawText, retries = 2) {
   const DEEPSEEK_API_KEY = process.env.DEEPSEEK_API_KEY;
   const DEEPSEEK_BASE_URL = process.env.DEEPSEEK_BASE_URL || 'https://api.deepseek.com/v1';
   const model = process.env.DEEPSEEK_MODEL || 'deepseek-chat';
@@ -29,31 +29,45 @@ async function analyzeWithAI(rawText) {
 
 内容如下：###`;
 
-  const response = await axios.post(
-    `${DEEPSEEK_BASE_URL}/chat/completions`,
-    {
-      model,
-      messages: [
-        { role: 'system', content: systemPrompt },
-        { role: 'user', content: rawText.substring(0, 12000) },
-      ],
-      temperature: 0.5,
-      max_tokens: 8192,
-    },
-    { headers: { Authorization: `Bearer ${DEEPSEEK_API_KEY}`, 'Content-Type': 'application/json' } }
-  );
-
-  const content = response.data.choices[0].message.content;
-  const cleanJson = content.replace(/```json|```/g, '').trim();
-  try {
-    return JSON.parse(cleanJson);
-  } catch (e) {
-    console.error('解析失败，原始输出：', content);
-    return [];
+  for (let attempt = 1; attempt <= retries; attempt++) {
+    try {
+      const response = await axios.post(
+        `${DEEPSEEK_BASE_URL}/chat/completions`,
+        {
+          model,
+          messages: [
+            { role: 'system', content: systemPrompt },
+            { role: 'user', content: rawText.substring(0, 12000) },
+          ],
+          temperature: 0.5,
+          max_tokens: 8192,
+        },
+        {
+          headers: { Authorization: `Bearer ${DEEPSEEK_API_KEY}`, 'Content-Type': 'application/json' },
+          timeout: 30000,
+        }
+      );
+      const content = response.data.choices[0].message.content;
+      const cleanJson = content.replace(/```json|```/g, '').trim();
+      const parsed = JSON.parse(cleanJson);
+      if (Array.isArray(parsed)) return parsed;
+    } catch (e) {
+      console.error(`AI调用失败 (第${attempt}次):`, e.message);
+      if (attempt < retries) {
+        console.log(`等待2秒后重试...`);
+        await new Promise(r => setTimeout(r, 2000));
+      }
+    }
   }
+  console.error('AI调用全部重试失败，返回空数组');
+  return [];
 }
 
-export async function GET(request) {
+async function analyzeWithAI(rawText) {
+  return callAI(rawText);
+}
+
+
   try {
     const results = [];
     for (const src of SOURCES) {
