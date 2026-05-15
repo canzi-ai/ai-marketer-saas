@@ -29,15 +29,22 @@ function CheckoutContent() {
       </div>
 
       <div className="bg-green-50 border border-green-200 rounded-2xl p-6 mb-6">
-        <p className="text-lg font-semibold text-green-800 mb-3">📱 30秒完成订阅</p>
-        <div className="bg-white rounded-xl p-4 mb-3 inline-block border-2 border-dashed border-green-300">
-          <p className="text-6xl mb-2">📱</p>
-          <p className="text-sm text-gray-500 font-mono">扫码添加微信</p>
-          <p className="text-xs text-gray-400 mt-1">（替换为你的微信二维码图片）</p>
+        <p className="text-lg font-semibold text-green-800 mb-3">📱 扫码添加微信，30秒完成订阅</p>
+        <div className="bg-white rounded-xl p-4 mb-3 inline-block">
+          <img 
+            src="/qrcode.png" 
+            alt="微信二维码" 
+            className="w-48 h-48 mx-auto rounded-lg"
+            onError={(e) => {
+              const target = e.target as HTMLImageElement;
+              target.style.display = 'none';
+              target.parentElement!.innerHTML = '<p class="text-red-500 text-sm">二维码图片未上传，请手动搜索微信号</p>';
+            }}
+          />
         </div>
         <p className="text-sm text-gray-600 mb-2">或手动搜索微信号：</p>
         <p className="text-xl font-bold font-mono bg-white inline-block px-6 py-2 rounded-full border">canzi-ai</p>
-        <p className="text-xs text-gray-400 mt-3">添加后发送「订阅付费版」</p>
+        <p className="text-xs text-gray-400 mt-3">添加后发送「订阅{current.name.split(' ')[1] || '付费版'}」即可</p>
       </div>
 
       <div className="text-sm text-gray-500 space-y-1">
