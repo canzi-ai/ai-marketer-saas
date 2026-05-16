@@ -3,38 +3,7 @@ import { useState, useEffect } from 'react';
 
 const CHECKOUT_URL = 'https://canzi-ai.com/checkout?plan=standard';
 
-const plans = [
-  {
-    name: '🆓 免费版',
-    price: '0',
-    period: '',
-    features: ['每日 1 条机会（网页看标题+客户）', '公开推送'],
-    cta: '往下看今日机会 ↓',
-    href: '#today-opportunity',
-    highlight: false
-  },
-  {
-    name: '⚡ 付费版',
-    price: '9.9',
-    period: '首月',
-    features: ['每日 5 条完整机会 + 行动清单', '飞书私密推送', '执行 SOP 模板', '所需工具清单', '次月起 ¥29/月，随时取消'],
-    cta: '首月 ¥9.9 订阅',
-    href: CHECKOUT_URL,
-    highlight: true
-  },
-  {
-    name: '💎 深度版',
-    price: '99',
-    period: '月',
-    features: ['全部付费版权益', '每周 1v1 语音：帮你挑机会落地', '发布文案 / 代码模板', '私人答疑群'],
-    cta: '联系升级',
-    href: 'mailto:hi@canzi-ai.com?subject=升级深度版',
-    highlight: false
-  }
-];
-
 export default function HomePage() {
-  const [billing, setBilling] = useState<'monthly' | 'yearly'>('monthly');
   const [todayOpp, setTodayOpp] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
@@ -50,115 +19,171 @@ export default function HomePage() {
       .catch(() => setLoading(false));
   }, []);
 
+  const deviceIcon = todayOpp?.device === '手机' ? '📱' : '💻';
+  const deviceLabel = todayOpp?.device === '手机' ? '只需手机即可' : '需要电脑';
+
   return (
-    <div className="max-w-4xl mx-auto py-12 px-4">
-      <div className="text-center mb-8">
-        <h1 className="text-4xl font-bold mb-3">🚀 独立开发者掘金简报</h1>
-        <p className="text-lg text-gray-500">AI 抓取行业动态 → 提炼可执行的赚钱机会 → 每天推给你</p>
-        <p className="text-sm text-gray-400 mt-1">每日由 AI 自动生成 · 付费版附人工筛选</p>
+    <div style={{ fontFamily: 'system-ui, -apple-system, sans-serif', maxWidth: 800, margin: '0 auto', padding: '24px 16px 60px' }}>
+      
+      <div style={{ textAlign: 'center', marginBottom: 32 }}>
+        <h1 style={{ fontSize: 'clamp(28px,5vw,40px)', fontWeight: 800, marginBottom: 8, color: '#0f172a' }}>
+          🚀 每天一个赚钱机会
+        </h1>
+        <p style={{ fontSize: 18, color: '#64748b', lineHeight: 1.6, maxWidth: 500, margin: '0 auto' }}>
+          不是新闻，是<b style={{ color: '#2563eb' }}>你可以立刻动手</b>的赚钱路线图
+        </p>
+        <p style={{ fontSize: 14, color: '#94a3b8', marginTop: 4 }}>每日自动分析 · 免费公开 1 条</p>
       </div>
 
-      <div id="today-opportunity" className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-2xl p-8 mb-6 text-white">
-        <p className="text-sm opacity-80 mb-1">📅 {new Date().toLocaleDateString('zh-CN')} · 今日免费机会 · AI自动生成仅供参考</p>
+      <div style={{
+        background: 'linear-gradient(135deg, #1e40af 0%, #7c3aed 100%)',
+        borderRadius: 20,
+        padding: '32px 24px',
+        marginBottom: 24,
+        color: '#fff',
+        boxShadow: '0 8px 40px rgba(124,58,237,0.3)',
+      }}>
+        <div style={{ display: 'flex', gap: 8, marginBottom: 16, flexWrap: 'wrap' }}>
+          <span style={{ background: 'rgba(255,255,255,0.2)', padding: '4px 12px', borderRadius: 20, fontSize: 13, fontWeight: 600 }}>
+            📅 {new Date().toLocaleDateString('zh-CN')}
+          </span>
+          <span style={{ background: 'rgba(255,255,255,0.2)', padding: '4px 12px', borderRadius: 20, fontSize: 13, fontWeight: 600 }}>
+            免费公开
+          </span>
+          <span style={{ background: todayOpp?.device === '手机' ? '#22c55e' : '#3b82f6', padding: '4px 12px', borderRadius: 20, fontSize: 13, fontWeight: 700 }}>
+            {deviceIcon} {deviceLabel}
+          </span>
+        </div>
+
         {loading ? (
-          <p className="text-lg mt-4">⏳ 正在抓取最新机会...</p>
+          <div style={{ textAlign: 'center', padding: '40px 0' }}>
+            <div style={{ fontSize: 48, marginBottom: 12 }}>⏳</div>
+            <p style={{ fontSize: 18 }}>正在挖掘今天的赚钱机会...</p>
+          </div>
         ) : todayOpp ? (
           <>
-            <h2 className="text-3xl font-bold mt-2 mb-2">🔥 {todayOpp.title}</h2>
-            <p className="text-lg opacity-90 mb-4">🎯 {todayOpp.target}</p>
-            
-            <div className="bg-white/10 rounded-xl p-5 mb-4 backdrop-blur-sm">
-              <p className="text-sm opacity-70 mb-2">💡 机会详情 + 📋 行动清单</p>
-              <div className="blur-sm select-none opacity-50">
-                <p className="text-sm mb-1">{todayOpp.idea?.substring(0, 60)}...</p>
-                <p className="text-sm">💰 {todayOpp.revenue} · ⚡ {todayOpp.difficulty} · {todayOpp.cost}</p>
-                <p className="text-sm mt-1">📋 {todayOpp.actions?.join(' · ')}</p>
+            <h2 style={{ fontSize: 'clamp(22px,4vw,32px)', fontWeight: 800, marginBottom: 8, lineHeight: 1.3 }}>
+              🔥 {todayOpp.title}
+            </h2>
+
+            <div style={{
+              background: 'rgba(255,255,255,0.15)',
+              borderRadius: 14,
+              padding: '16px 20px',
+              marginBottom: 16,
+              backdropFilter: 'blur(10px)',
+            }}>
+              <p style={{ fontSize: 13, opacity: 0.8, marginBottom: 6 }}>📈 收入潜力预估</p>
+              <p style={{ fontSize: 16, fontWeight: 700, lineHeight: 1.6 }}>{todayOpp.revenue}</p>
+            </div>
+
+            <div style={{ marginBottom: 16 }}>
+              <p style={{ fontSize: 13, opacity: 0.7, marginBottom: 4 }}>🎯 目标客户</p>
+              <p style={{ fontSize: 15, lineHeight: 1.5 }}>{todayOpp.target}</p>
+            </div>
+
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, marginBottom: 16 }}>
+              <div style={{ background: 'rgba(255,255,255,0.1)', borderRadius: 12, padding: 12 }}>
+                <p style={{ fontSize: 12, opacity: 0.7 }}>💰 启动成本</p>
+                <p style={{ fontSize: 14, fontWeight: 600 }}>{todayOpp.cost}</p>
+              </div>
+              <div style={{ background: 'rgba(255,255,255,0.1)', borderRadius: 12, padding: 12 }}>
+                <p style={{ fontSize: 12, opacity: 0.7 }}>⚡ 难度</p>
+                <p style={{ fontSize: 14, fontWeight: 600 }}>{todayOpp.difficulty}</p>
               </div>
             </div>
 
-            <div className="text-center">
-              <p className="text-lg font-semibold mb-2">🔒 完整行动清单 + 今天还有 4 条隐藏机会</p>
-              <a
-                href={CHECKOUT_URL}
-                className="inline-block bg-yellow-400 text-gray-900 px-8 py-3 rounded-full font-bold text-lg hover:bg-yellow-300 transition shadow-lg"
-              >
-                首月 ¥9.9 解锁全部
+            <div style={{
+              background: 'rgba(255,255,255,0.1)',
+              borderRadius: 16,
+              padding: '20px 24px',
+              marginBottom: 20,
+              border: '1px solid rgba(255,255,255,0.15)',
+            }}>
+              <p style={{ fontSize: 14, fontWeight: 600, marginBottom: 10, color: '#fbbf24' }}>
+                🔒 以下内容只对付费用户开放
+              </p>
+              <div style={{ filter: 'blur(6px)', userSelect: 'none', opacity: 0.5 }}>
+                <p style={{ marginBottom: 8 }}>{(todayOpp.idea || '').substring(0, 80)}...</p>
+                <p>📋 5步行动清单（已隐藏）</p>
+                <p>📝 执行SOP（已隐藏）</p>
+                <p>🛠 工具栈（已隐藏）</p>
+                <p>⚠️ 避坑指南（已隐藏）</p>
+              </div>
+            </div>
+
+            <div style={{ textAlign: 'center' }}>
+              <p style={{ fontSize: 16, fontWeight: 600, marginBottom: 12 }}>
+                👆 每天还有 4 条隐藏机会 + 完整SOP
+              </p>
+              <a href={CHECKOUT_URL} style={{
+                display: 'inline-block',
+                background: '#fbbf24',
+                color: '#1e293b',
+                padding: '16px 36px',
+                borderRadius: 50,
+                fontSize: 18,
+                fontWeight: 800,
+                textDecoration: 'none',
+                boxShadow: '0 4px 20px rgba(251,191,36,0.5)',
+              }}>
+                🔓 首月 ¥9.9 解锁全部
               </a>
-              <p className="text-sm opacity-70 mt-2">次月起 ¥29/月 · 30天无理由退款</p>
+              <p style={{ fontSize: 13, opacity: 0.8, marginTop: 8 }}>次月起 ¥29/月 · 30天无理由退款</p>
             </div>
           </>
         ) : (
-          <div className="text-center py-4">
-            <p className="text-lg">今日机会正在生成中，稍后刷新</p>
+          <div style={{ textAlign: 'center', padding: 40 }}>
+            <p style={{ fontSize: 18 }}>机会正在生成中，稍后刷新</p>
           </div>
         )}
       </div>
 
-      <div className="text-center mb-8 mt-12">
-        <h2 className="text-3xl font-bold mb-2">选择你的掘金计划</h2>
-        <p className="text-gray-500">看标题免费，看执行付费 — 首月 ¥9.9 试用</p>
+      <div style={{ textAlign: 'center', marginBottom: 24, marginTop: 40 }}>
+        <h2 style={{ fontSize: 26, fontWeight: 700, color: '#0f172a', marginBottom: 4 }}>选择你的计划</h2>
+        <p style={{ color: '#64748b' }}>免费看标题 · 付费看执行 · 首月 ¥9.9 零风险</p>
       </div>
 
-      <div className="flex justify-center mb-10">
-        <div className="bg-gray-100 rounded-full p-1 flex">
-          <button
-            onClick={() => setBilling('monthly')}
-            className={`px-6 py-2 rounded-full text-sm font-medium transition ${billing === 'monthly' ? 'bg-white shadow' : ''}`}
-          >
-            月付
-          </button>
-          <button
-            onClick={() => setBilling('yearly')}
-            className={`px-6 py-2 rounded-full text-sm font-medium transition ${billing === 'yearly' ? 'bg-white shadow' : ''}`}
-          >
-            年付 (省20%)
-          </button>
-        </div>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: 16 }}>
+        {[
+          { name: '🆓 免费版', price: '0', period: '', features: ['每日 1 条机会（网页看）', '公开推送'], cta: '只看免费的', href: '#today-opportunity', hl: false },
+          { name: '⚡ 付费版', price: '9.9', period: '首月', features: ['每日 5 条完整机会', '飞书/微信私密推送', '7天执行SOP', '工具栈+避坑指南', '次月起 ¥29/月'], cta: '首月 ¥9.9 订阅', href: CHECKOUT_URL, hl: true },
+          { name: '💎 深度版', price: '99', period: '月', features: ['全部付费版权益', '每周 1v1 语音指导', '发布文案/代码模板', '私人答疑群'], cta: '联系升级', href: 'mailto:hi@canzi-ai.com', hl: false },
+        ].map((plan, i) => (
+          <div key={i} style={{
+            border: plan.hl ? '2px solid #3b82f6' : '1px solid #e2e8f0',
+            borderRadius: 16,
+            padding: '24px 20px',
+            display: 'flex',
+            flexDirection: 'column',
+            boxShadow: plan.hl ? '0 4px 24px rgba(59,130,246,0.15)' : 'none',
+            background: '#fff',
+          }}>
+            {plan.hl && <p style={{ fontSize: 12, color: '#3b82f6', fontWeight: 700, marginBottom: 8 }}>⭐ 最受欢迎</p>}
+            <h3 style={{ fontSize: 18, fontWeight: 700, marginBottom: 4 }}>{plan.name}</h3>
+            <p style={{ fontSize: 32, fontWeight: 800, marginBottom: 2, color: plan.hl ? '#3b82f6' : '#0f172a' }}>
+              ¥{plan.price}
+              {plan.period && <span style={{ fontSize: 14, fontWeight: 400, color: '#94a3b8' }}>/{plan.period}</span>}
+            </p>
+            <ul style={{ listStyle: 'none', padding: 0, margin: '16px 0', flex: 1 }}>
+              {plan.features.map((f, fi) => (
+                <li key={fi} style={{ fontSize: 14, padding: '4px 0', color: '#475569', display: 'flex', alignItems: 'flex-start', gap: 6 }}>
+                  <span>✅</span> {f}
+                </li>
+              ))}
+            </ul>
+            <a href={plan.href} style={{
+              display: 'block', textAlign: 'center', padding: '12px 0', borderRadius: 50, fontWeight: 700, fontSize: 15,
+              textDecoration: 'none', background: plan.hl ? '#3b82f6' : plan.cta.includes('免费') ? '#f1f5f9' : '#fff',
+              color: plan.hl ? '#fff' : '#334155', border: plan.hl ? 'none' : '1px solid #e2e8f0',
+            }}>{plan.cta}</a>
+          </div>
+        ))}
       </div>
 
-      <div className="grid md:grid-cols-3 gap-6">
-        {plans.map((plan) => {
-          const displayPrice = billing === 'yearly' && plan.price !== '0' ? Math.round(Number(plan.price) * 0.8) : plan.price;
-          return (
-            <div
-              key={plan.name}
-              className={`border rounded-2xl p-6 flex flex-col ${plan.highlight ? 'border-blue-500 shadow-xl ring-2 ring-blue-100' : 'border-gray-200'}`}
-            >
-              {plan.highlight && (
-                <p className="text-xs text-blue-600 font-semibold mb-2">⭐ 最受欢迎</p>
-              )}
-              <h3 className="text-xl font-semibold mb-2">{plan.name}</h3>
-              <div className="text-4xl font-bold mb-1">
-                ¥{displayPrice}
-                {plan.period && <span className="text-base font-normal text-gray-400">/{plan.period}</span>}
-              </div>
-              <ul className="mt-4 space-y-2 flex-1 text-sm">
-                {plan.features.map((f, i) => (
-                  <li key={i} className="flex items-start gap-2">
-                    <span className="flex-shrink-0">✅</span> {f}
-                  </li>
-                ))}
-              </ul>
-              <a
-                href={plan.href}
-                className={`mt-6 block text-center py-2.5 px-4 rounded-full font-medium text-sm transition ${
-                  plan.highlight
-                    ? 'bg-blue-600 text-white hover:bg-blue-700'
-                    : plan.cta.includes('↓')
-                      ? 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                      : 'border border-gray-300 hover:bg-gray-50'
-                }`}
-              >
-                {plan.cta}
-              </a>
-            </div>
-          );
-        })}
-      </div>
-
-      <div className="text-center mt-12 text-sm text-gray-400">
-        <p>💬 有任何问题？<a href="mailto:hi@canzi-ai.com" className="underline">hi@canzi-ai.com</a></p>
-        <p className="mt-1">🔒 30 天无理由退款 · 首月 ¥9.9 零风险试用</p>
+      <div style={{ textAlign: 'center', marginTop: 32, color: '#94a3b8', fontSize: 13 }}>
+        <p>💬 问题？<a href="mailto:hi@canzi-ai.com" style={{ color: '#3b82f6' }}>hi@canzi-ai.com</a></p>
+        <p style={{ marginTop: 4 }}>🔒 30天无理由退款 · 零风险</p>
       </div>
     </div>
   );
