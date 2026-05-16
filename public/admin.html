@@ -6,38 +6,53 @@
   <title>付费内容发送</title>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { font-family: system-ui, -apple-system, sans-serif; background: #0f172a; min-height: 100vh; padding: 24px 16px; color: #e2e8f0; }
-    .container { max-width: 860px; margin: 0 auto; }
-    .header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; flex-wrap: wrap; gap: 12px; }
-    h1 { color: #f1f5f9; font-size: 28px; margin: 0; }
-    .subtitle { color: #94a3b8; font-size: 14px; margin: 4px 0 0; }
-    .btn-group { display: flex; gap: 10px; flex-wrap: wrap; }
-    .btn { padding: 12px 20px; border-radius: 10px; font-weight: 700; border: none; cursor: pointer; font-size: 15px; color: #fff; }
-    .btn:disabled { opacity: 0.5; cursor: not-allowed; }
-    .btn-blue { background: #3b82f6; }
-    .btn-green { background: #22c55e; }
-    .btn-purple { background: #8b5cf6; }
-    .btn-gray { background: #334155; }
-    .status { padding: 14px 18px; border-radius: 10px; margin-bottom: 20px; font-size: 14px; font-weight: 500; display: none; }
-    .status-success { background: #065f46; color: #a7f3d0; display: block; }
-    .status-error { background: #7f1d1d; color: #fecaca; display: block; }
-    .loading { text-align: center; padding: 80px; }
-    .loading-icon { font-size: 48px; margin-bottom: 16px; }
-    .info-text { color: #94a3b8; font-size: 13px; margin-bottom: 16px; }
-    .card { background: linear-gradient(135deg, #1a1a2e, #16213e); border-radius: 16px; padding: 32px 28px; margin-bottom: 24px; box-shadow: 0 4px 24px rgba(0,0,0,0.3); }
-    .card-header { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; }
-    .card-num { background: #3b82f6; color: #fff; width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 16px; flex-shrink: 0; }
-    .card-title { color: #f1f5f9; font-size: 22px; margin: 0; font-weight: 700; }
-    .section-title { color: #60a5fa; font-weight: 700; font-size: 15px; margin-bottom: 8px; margin-top: 20px; }
-    .section-box { background: rgba(255,255,255,0.05); border-radius: 10px; padding: 16px; margin-top: 6px; line-height: 1.8; font-size: 14px; }
-    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 16px; }
-    .tag { color: #fff; padding: 4px 12px; border-radius: 20px; font-size: 13px; font-weight: 600; display: inline-block; margin-right: 8px; margin-bottom: 6px; }
-    .tag-purple { background: #7c3aed; }
-    .tag-green { background: #059669; }
-    .tag-orange { background: #d97706; }
-    .footer { text-align: center; padding: 40px 0; color: #64748b; font-size: 13px; }
-    .footer p { margin-top: 8px; }
-    @media (max-width: 640px) { .grid-2 { grid-template-columns: 1fr; } }
+    body { font-family: system-ui, -apple-system, sans-serif; background: #0f172a; min-height: 100vh; padding: 16px; color: #e2e8f0; }
+    .container { max-width: 900px; margin: 0 auto; }
+    .header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; flex-wrap: wrap; gap: 12px; }
+    h1 { font-size: clamp(22px, 4vw, 28px); }
+    .sub { color: #94a3b8; font-size: 13px; margin-top: 2px; }
+    .btns { display: flex; gap: 8px; flex-wrap: wrap; }
+    .btn { padding: 10px 16px; border-radius: 10px; font-weight: 700; border: none; cursor: pointer; font-size: 14px; color: #fff; white-space: nowrap; }
+    .btn:disabled { opacity: 0.4; cursor: not-allowed; }
+    .btn-b { background: #3b82f6; }
+    .btn-g { background: #22c55e; }
+    .btn-p { background: #8b5cf6; }
+    .status { padding: 12px 16px; border-radius: 10px; margin-bottom: 16px; font-size: 14px; display: none; }
+    .s-ok { background: #065f46; color: #a7f3d0; display: block; }
+    .s-err { background: #7f1d1d; color: #fecaca; display: block; }
+    .tabs { display: flex; gap: 12px; margin-bottom: 20px; }
+    .tab { padding: 10px 20px; border-radius: 50px; font-weight: 700; font-size: 15px; border: 2px solid transparent; cursor: pointer; transition: all 0.2s; }
+    .tab-active-pc { background: #3b82f6; color: #fff; border-color: #3b82f6; }
+    .tab-active-phone { background: #22c55e; color: #fff; border-color: #22c55e; }
+    .tab-inactive { background: transparent; color: #94a3b8; border-color: #334155; }
+    .tab-inactive:hover { border-color: #64748b; }
+    .count-badge { font-size: 12px; opacity: 0.8; margin-left: 4px; }
+    .card { background: linear-gradient(135deg, #1a1a2e, #16213e); border-radius: 16px; padding: 28px 24px; margin-bottom: 20px; box-shadow: 0 4px 24px rgba(0,0,0,0.3); }
+    .card-header { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 14px; }
+    .card-num { background: #3b82f6; color: #fff; min-width: 34px; height: 34px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 15px; flex-shrink: 0; }
+    .card-num-phone { background: #22c55e; }
+    .card-title { font-size: clamp(18px, 3vw, 22px); font-weight: 700; line-height: 1.3; flex: 1; }
+    .device-badge { display: inline-block; padding: 2px 10px; border-radius: 20px; font-size: 12px; font-weight: 700; margin-top: 4px; }
+    .badge-pc { background: #1e3a5f; color: #60a5fa; }
+    .badge-phone { background: #14532d; color: #4ade80; }
+    .st { color: #60a5fa; font-weight: 700; font-size: 14px; margin-bottom: 6px; margin-top: 18px; }
+    .sb { background: rgba(255,255,255,0.04); border-radius: 10px; padding: 14px; line-height: 1.7; font-size: 14px; }
+    .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 14px; }
+    .tag { color: #fff; padding: 3px 10px; border-radius: 20px; font-size: 12px; font-weight: 600; display: inline-block; margin-right: 6px; margin-bottom: 4px; }
+    .t-purple { background: #7c3aed; }
+    .t-green { background: #059669; }
+    .t-orange { background: #d97706; }
+    .loading { text-align: center; padding: 60px 16px; }
+    .loading-icon { font-size: 44px; margin-bottom: 12px; }
+    .footer { text-align: center; padding: 32px 0; color: #64748b; font-size: 13px; }
+    @media (max-width: 640px) {
+      .grid2 { grid-template-columns: 1fr; }
+      .header { flex-direction: column; align-items: flex-start; }
+      .btns { width: 100%; }
+      .btn { flex: 1; text-align: center; }
+      .card { padding: 20px 16px; }
+      .tabs { overflow-x: auto; }
+    }
   </style>
 </head>
 <body>
@@ -45,150 +60,199 @@
     <div class="header">
       <div>
         <h1>📬 付费内容发送</h1>
-        <p class="subtitle">深度分析 · 5条机会 + 完整SOP + 工具栈 + 避坑</p>
+        <p class="sub">深度分析 · 电脑/手机分类 · 含SOP+工具+避坑</p>
       </div>
-      <div class="btn-group">
-        <button class="btn btn-blue" onclick="fetchContent()">🔄 重新分析</button>
-        <button class="btn btn-green" id="btnCopy" onclick="copyContent()" disabled>📋 一键复制</button>
-        <button class="btn btn-purple" id="btnPush" onclick="pushFeishu()" disabled>📤 推飞书</button>
+      <div class="btns">
+        <button class="btn btn-b" onclick="fetchContent()">🔄 重新分析</button>
+        <button class="btn btn-g" id="btnCopy" onclick="copyContent()" disabled>📋 一键复制</button>
+        <button class="btn btn-p" id="btnPush" onclick="pushFeishu()" disabled>📤 推飞书</button>
       </div>
     </div>
 
     <div id="status" class="status"></div>
+
+    <div class="tabs" id="tabs" style="display:none;">
+      <button class="tab tab-active-pc" id="tabAll" onclick="showTab('all')">📋 全部 <span class="count-badge" id="cntAll"></span></button>
+      <button class="tab tab-inactive" id="tabPC" onclick="showTab('电脑')">💻 电脑端 <span class="count-badge" id="cntPC"></span></button>
+      <button class="tab tab-inactive" id="tabPhone" onclick="showTab('手机')">📱 手机端 <span class="count-badge" id="cntPhone"></span></button>
+    </div>
+
     <div id="content">
       <div class="loading">
         <div class="loading-icon">⏳</div>
-        <p style="color:#94a3b8;font-size:18px;">正在分析行业动态...</p>
-        <p style="color:#64748b;font-size:14px;margin-top:8px;">提取可执行机会 + 生成SOP + 匹配工具栈</p>
+        <p style="color:#94a3b8;font-size:17px;">正在分析行业动态...</p>
+        <p style="color:#64748b;font-size:14px;margin-top:6px;">提取电脑+手机双端赚钱机会</p>
       </div>
     </div>
   </div>
 
   <script>
     let paidData = [];
+    let currentTab = 'all';
 
     function showStatus(msg, type) {
       const el = document.getElementById('status');
       el.textContent = msg;
-      el.className = 'status status-' + type;
+      el.className = 'status s-' + type;
     }
 
     async function fetchContent() {
-      document.getElementById('content').innerHTML = '<div class="loading"><div class="loading-icon">⏳</div><p style="color:#94a3b8;font-size:18px;">正在分析行业动态...</p><p style="color:#64748b;font-size:14px;margin-top:8px;">提取可执行机会 + 生成SOP + 匹配工具栈</p></div>';
+      document.getElementById('content').innerHTML = '<div class="loading"><div class="loading-icon">⏳</div><p style="color:#94a3b8;font-size:17px;">正在分析行业动态...</p><p style="color:#64748b;font-size:14px;margin-top:6px;">提取电脑+手机双端赚钱机会</p></div>';
       document.getElementById('btnCopy').disabled = true;
       document.getElementById('btnPush').disabled = true;
-      
+      document.getElementById('tabs').style.display = 'none';
+
       try {
         const res = await fetch('/api/daily-report?tier=paid');
         const data = await res.json();
         paidData = data.report?.opportunities || [];
         
         if (paidData.length === 0) {
-          showStatus('⚠️ 今日未抓到机会，使用了备用范例', 'error');
+          showStatus('⚠️ 未抓取到机会，使用备用数据', 'err');
         } else {
-          showStatus('✅ 分析完成 · 今日 ' + paidData.length + ' 条掘金机会', 'success');
+          showStatus('✅ 分析完成 · ' + paidData.length + ' 条机会 · ' + 
+            paidData.filter(o=>o.device==='手机').length + '手机 / ' + 
+            paidData.filter(o=>o.device==='电脑').length + '电脑', 'ok');
         }
         
         document.getElementById('btnCopy').disabled = false;
         document.getElementById('btnPush').disabled = false;
-        renderCards();
+        document.getElementById('tabs').style.display = 'flex';
+        showTab('all');
       } catch (e) {
-        showStatus('❌ 获取失败：' + e.message + '。请检查后端是否正常运行。', 'error');
+        showStatus('❌ 获取失败：' + e.message + ' · 请确认后端已部署', 'err');
         document.getElementById('content').innerHTML = '';
       }
     }
 
-    function renderCards() {
-      let html = '<p class="info-text">📅 ' + new Date().toLocaleDateString('zh-CN') + ' · 共 ' + paidData.length + ' 条机会</p>';
+    function getFiltered() {
+      if (currentTab === 'all') return paidData;
+      return paidData.filter(o => o.device === currentTab);
+    }
+
+    function showTab(tab) {
+      currentTab = tab;
+      const pc = paidData.filter(o => o.device === '电脑').length;
+      const phone = paidData.filter(o => o.device === '手机').length;
       
-      paidData.forEach(function(opp, i) {
+      document.getElementById('cntAll').textContent = '(' + paidData.length + ')';
+      document.getElementById('cntPC').textContent = '(' + pc + ')';
+      document.getElementById('cntPhone').textContent = '(' + phone + ')';
+
+      ['all','电脑','手机'].forEach(t => {
+        const el = document.getElementById(t === 'all' ? 'tabAll' : (t === '电脑' ? 'tabPC' : 'tabPhone'));
+        el.className = t === tab 
+          ? (t === '手机' ? 'tab tab-active-phone' : 'tab tab-active-pc')
+          : 'tab tab-inactive';
+      });
+
+      renderCards(getFiltered());
+    }
+
+    function renderCards(list) {
+      if (list.length === 0) {
+        document.getElementById('content').innerHTML = '<div class="loading"><p style="color:#94a3b8;">该分类下暂无机会</p></div>';
+        return;
+      }
+
+      let html = '';
+      list.forEach(function(opp, i) {
+        const isPhone = opp.device === '手机';
         html += '<div class="card">';
-        html += '<div class="card-header"><span class="card-num">' + (i+1) + '</span><h2 class="card-title">' + escapeHtml(opp.title || '') + '</h2></div>';
-        
-        html += '<div class="section-title">💡 为什么能做 & 怎么做</div>';
-        html += '<div class="section-box">' + escapeHtml(opp.idea || '') + '</div>';
-        
-        html += '<div class="grid-2">';
-        html += '<div><div class="section-title">🎯 精准客户</div><div class="section-box">' + escapeHtml(opp.target || '') + '</div></div>';
-        html += '<div><div class="section-title">⚡ 成本 & 难度</div><div class="section-box"><div style="margin-bottom:6px">💰 ' + escapeHtml(opp.cost || '') + '</div><div>' + escapeHtml(opp.difficulty || '') + '</div></div></div>';
+        html += '<div class="card-header">';
+        html += '<span class="card-num' + (isPhone ? ' card-num-phone' : '') + '">' + (i+1) + '</span>';
+        html += '<div style="flex:1"><h2 class="card-title">' + esc(opp.title) + '</h2>';
+        html += '<span class="device-badge ' + (isPhone ? 'badge-phone' : 'badge-pc') + '">' + (isPhone ? '📱 仅需手机' : '💻 需要电脑') + '</span></div>';
         html += '</div>';
-        
-        html += '<div class="section-title">📈 收入潜力</div>';
-        html += '<div class="section-box">' + escapeHtml(opp.revenue || '') + '</div>';
-        
-        html += '<div class="section-title">📋 5步行动清单</div>';
-        html += '<div class="section-box">';
-        (opp.actions || []).forEach(function(a) { html += '<div style="margin-bottom:6px">✔ ' + escapeHtml(a) + '</div>'; });
+
+        html += '<div class="st">💡 为什么能做 & 怎么做</div>';
+        html += '<div class="sb">' + esc(opp.idea) + '</div>';
+
+        html += '<div class="grid2">';
+        html += '<div><div class="st">🎯 精准客户</div><div class="sb">' + esc(opp.target) + '</div></div>';
+        html += '<div><div class="st">⚡ 成本 & 难度</div><div class="sb"><div style="margin-bottom:4px">💰 ' + esc(opp.cost) + '</div><div>' + esc(opp.difficulty) + '</div></div></div>';
         html += '</div>';
-        
-        html += '<div class="section-title">📝 7天执行SOP</div>';
-        html += '<div class="section-box">' + escapeHtml(opp.sop || '暂无') + '</div>';
-        
-        html += '<div class="grid-2">';
-        html += '<div><div class="section-title">🛠 推荐工具栈</div><div class="section-box">' + escapeHtml(opp.tools || '暂无') + '</div></div>';
-        html += '<div><div class="section-title">⚠️ 避坑指南</div><div class="section-box" style="border-left:3px solid #f87171">' + escapeHtml(opp.pitfall || '暂无') + '</div></div>';
+
+        html += '<div class="st">📈 收入潜力</div>';
+        html += '<div class="sb">' + esc(opp.revenue) + '</div>';
+
+        html += '<div class="st">📋 5步行动清单</div>';
+        html += '<div class="sb">';
+        (opp.actions||[]).forEach(function(a) { html += '<div style="margin-bottom:5px">✔ ' + esc(a) + '</div>'; });
         html += '</div>';
-        
-        html += '<div style="margin-top:16px">';
-        html += '<span class="tag tag-purple">可执行</span><span class="tag tag-green">低风险</span><span class="tag tag-orange">高回报</span>';
+
+        html += '<div class="st">📝 7天执行SOP</div>';
+        html += '<div class="sb">' + esc(opp.sop||'暂无') + '</div>';
+
+        html += '<div class="grid2">';
+        html += '<div><div class="st">🛠 工具栈</div><div class="sb">' + esc(opp.tools||'暂无') + '</div></div>';
+        html += '<div><div class="st">⚠️ 避坑</div><div class="sb" style="border-left:3px solid #f87171">' + esc(opp.pitfall||'暂无') + '</div></div>';
+        html += '</div>';
+
+        html += '<div style="margin-top:14px">';
+        html += '<span class="tag t-purple">可执行</span>';
+        html += '<span class="tag t-green">低风险</span>';
+        html += '<span class="tag t-orange">高回报</span>';
+        if (isPhone) html += '<span class="tag" style="background:#22c55e;">📱手机就能做</span>';
         html += '</div></div>';
       });
-      
-      html += '<div class="footer"><p>━━━ 付费版 END · 明日继续 ━━━</p><p>以上内容由AI深度分析生成 · 人工审核把关</p></div>';
       document.getElementById('content').innerHTML = html;
     }
 
-    function escapeHtml(text) {
-      if (!text) return '';
-      var div = document.createElement('div');
-      div.textContent = text;
-      return div.innerHTML;
+    function esc(t) {
+      if (!t) return '';
+      const d = document.createElement('div');
+      d.textContent = t;
+      return d.innerHTML;
     }
 
     function copyContent() {
-      var text = '';
-      text += '━━━━━━━━━━━━━━━━━━━━\n';
+      const pc = paidData.filter(o => o.device === '电脑');
+      const phone = paidData.filter(o => o.device === '手机');
+      let text = '━━━━━━━━━━━━━━━━━━━━━━\n';
       text += '🚀 独立开发者掘金简报 · 付费版\n';
       text += '📅 ' + new Date().toLocaleDateString('zh-CN') + '\n';
-      text += '━━━━━━━━━━━━━━━━━━━━\n\n';
-      
-      paidData.forEach(function(opp, i) {
-        text += '┏━━━━ 机会 ' + (i+1) + '/' + paidData.length + ' ━━━━┓\n\n';
-        text += '🔥 ' + opp.title + '\n\n';
-        text += '💡 为什么能做 & 怎么做\n' + opp.idea + '\n\n';
-        text += '🎯 精准客户画像\n' + opp.target + '\n\n';
-        text += '💰 收入潜力\n' + opp.revenue + '\n\n';
-        text += '⚡ 启动成本 & 难度\n' + opp.cost + '\n' + opp.difficulty + '\n\n';
-        text += '📋 5步行动清单\n' + (opp.actions||[]).map(function(a,i){return '  '+(i+1)+'. '+a;}).join('\n') + '\n\n';
-        text += '📝 7天执行SOP\n' + (opp.sop||'暂无') + '\n\n';
-        text += '🛠 推荐工具栈\n' + (opp.tools||'暂无') + '\n\n';
-        text += '⚠️ 避坑指南\n' + (opp.pitfall||'暂无') + '\n\n';
-        text += '━━━━━━━━━━━━━━━━━━━━\n\n';
-      });
-      
+      text += '━━━━━━━━━━━━━━━━━━━━━━\n\n';
+
+      if (phone.length > 0) {
+        text += '╔════ 📱 手机端（无需电脑） ════╗\n\n';
+        phone.forEach(function(opp, i) { text += formatOpp(opp, i+1); });
+      }
+      if (pc.length > 0) {
+        text += '╔════ 💻 电脑端 ════╗\n\n';
+        pc.forEach(function(opp, i) { text += formatOpp(opp, i+1); });
+      }
       navigator.clipboard.writeText(text).then(function() {
-        showStatus('✅ 已复制全部内容，直接粘贴发给客户', 'success');
+        showStatus('✅ 已复制全部（含手机/电脑分类）', 'ok');
       }).catch(function() {
-        showStatus('❌ 复制失败，请手动选择复制', 'error');
+        showStatus('❌ 复制失败，请手动选择', 'err');
       });
+    }
+
+    function formatOpp(opp, i) {
+      let t = '';
+      t += '┏━━ 机会 ' + i + ' ━━┓\n\n';
+      t += '🔥 ' + opp.title + ' [' + (opp.device||'未知') + ']\n\n';
+      t += '💡 ' + opp.idea + '\n\n';
+      t += '🎯 ' + opp.target + '\n\n';
+      t += '💰 ' + opp.revenue + '\n\n';
+      t += '⚡ ' + opp.cost + ' | ' + opp.difficulty + '\n\n';
+      t += '📋 ' + (opp.actions||[]).map(function(a,i){return (i+1)+'. '+a;}).join('\n') + '\n\n';
+      t += '📝 ' + (opp.sop||'暂无') + '\n\n';
+      t += '🛠 ' + (opp.tools||'暂无') + '\n\n';
+      t += '⚠️ ' + (opp.pitfall||'暂无') + '\n\n';
+      t += '━━━━━━━━━━━━━━━━\n\n';
+      return t;
     }
 
     async function pushFeishu() {
       try {
         const res = await fetch('/api/feishu', { method: 'POST' });
         const data = await res.json();
-        showStatus(data.success ? '✅ 已推送到飞书群' : '❌ ' + (data.error||'失败'), data.success ? 'success' : 'error');
-      } catch(e) {
-        showStatus('❌ ' + e.message, 'error');
-      }
+        showStatus(data.success ? '✅ 已推送' : '❌ '+(data.error||'失败'), data.success ? 'ok' : 'err');
+      } catch(e) { showStatus('❌ '+e.message, 'err'); }
     }
 
-    // 删除 React admin 路由，改用静态 HTML
-    async function cleanupOldRoute() {
-      try { await fetch('/api/cleanup', { method: 'POST' }); } catch(e) {}
-    }
-
-    // 自动加载
     fetchContent();
   </script>
 </body>
