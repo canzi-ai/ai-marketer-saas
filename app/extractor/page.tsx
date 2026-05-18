@@ -29,7 +29,7 @@ export default function ExtractorLanding() {
             <li>Actionable insights</li>
             <li>Priority support</li>
           </ul>
-          <a href="https://canzi.lemonsqueezy.com" target="_blank" rel="noopener" style={{ display: 'block', marginTop: 20, padding: '12px', background: '#4f46e5', color: '#fff', borderRadius: 50, fontWeight: 600, textDecoration: 'none' }}>Upgrade to Pro</a>
+          <a href="https://canzi.lemonsqueezy.com/checkout/buy/e3c65585-e525-4c32-b63f-25cd6c8632f4" target="_blank" rel="noopener" style={{ display: 'block', marginTop: 20, padding: '12px', background: '#4f46e5', color: '#fff', borderRadius: 50, fontWeight: 600, textDecoration: 'none' }}>Upgrade to Pro</a>
         </div>
       </div>
       
